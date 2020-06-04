@@ -1,6 +1,7 @@
 import 'package:bytebankpersistence/database/dao/contact_dao.dart';
 import 'package:bytebankpersistence/models/Contact.dart';
 import 'package:bytebankpersistence/screens/ContactForm.dart';
+import 'package:bytebankpersistence/screens/transaction_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +12,7 @@ class ContactsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Contacts'),
+        title: Text('Transfer'),
       ),
       body: FutureBuilder<List<Contact>>(
         initialData: List(),
@@ -39,7 +40,15 @@ class ContactsList extends StatelessWidget {
               return ListView.builder(
                 itemBuilder: (context, index) {
                   final Contact contact = contacts[index];
-                  return _ContactItem(contact);
+                  return _ContactItem(
+                    contact,
+                    onClick: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => TransactionForm(contact)),
+                      );
+                    },
+                  );
                 },
                 itemCount: contacts.length,
               );
@@ -64,13 +73,18 @@ class ContactsList extends StatelessWidget {
 
 class _ContactItem extends StatelessWidget {
   final Contact contact;
+  final Function onClick;
 
-  _ContactItem(this.contact);
+  _ContactItem(
+    this.contact, {
+    @required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () => onClick(),
         title: Text(
           contact.name,
           style: TextStyle(fontSize: 24.0),
